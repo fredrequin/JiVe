@@ -79,6 +79,18 @@ int main(int argc, char **argv)
     uint32_t rec;
     
     uart_putchar(UART_BASE, 0x42); // 'B'
+    uart_putchar(UART_BASE, 0x4F); // 'O'
+    uart_putchar(UART_BASE, 0x4F); // 'O'
+    uart_putchar(UART_BASE, 0x54); // 'T'
+    
+    /*
+    // Loop-back test
+    while (1)
+    {
+        rec = uart_getchar(UART_BASE);
+        uart_putchar(UART_BASE, rec);
+    }
+    */
     
     // Read S-Record lines from the serial port
     rec = 0;

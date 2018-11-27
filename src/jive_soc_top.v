@@ -32,18 +32,6 @@ module jive_soc_top
     input             spi_miso  // 32A (#14)
 );
 
-    wire w_rtc_clk;
-
-    LSOSC U_low_freq_osc
-    (
-        `ifdef verilator3
-        ._clk    (clk),
-        `endif
-        .CLKLFPU (1'b1),
-        .CLKLFEN (w_addr_p0[31]),
-        .CLKLF   (w_rtc_clk)
-    );
-
     //=========================================================================
 
     reg  [3:0] r_rst_ctr;
@@ -62,6 +50,34 @@ module jive_soc_top
     
     assign rst = ~r_rst_ctr[3];
     
+    //=========================================================================
+    
+    wire w_rtc_clk;
+    reg  r_rtc_ena;
+    
+    always @ (posedge rst or posedge clk) begin
+        
+        if (rst) begin
+            r_rtc_ena <= 1'b0;
+        end
+        else begin
+            // Enable RTC when running application SW
+            if (w_addr_p0[31] & w_fetch_p0) begin
+                r_rtc_ena <= 1'b1;
+            end
+        end
+    end
+
+    LSOSC U_low_freq_osc
+    (
+        `ifdef verilator3
+        ._clk    (clk),
+        `endif
+        .CLKLFPU (1'b1),
+        .CLKLFEN (r_rtc_ena),
+        .CLKLF   (w_rtc_clk)
+    );
+
     //=========================================================================
     
     reg        r_ram_dtack_p1;

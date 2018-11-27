@@ -47,7 +47,7 @@ module jive_uart
     always@(posedge rst or posedge clk) begin : RX_INPUT
     
         if (rst) begin
-            r_uart_rxd_cc <= 3'b000;
+            r_uart_rxd_cc <= 3'b111;
         end
         else begin
             r_uart_rxd_cc <= { r_uart_rxd_cc[1:0], uart_rxd };
@@ -104,56 +104,81 @@ module jive_uart
     // UART receiver state machine
     //=========================================================================
     
-    /*
-    `ifdef verilator3
-    integer _uart_fh_in;
-    
-    initial begin
-        _uart_fh_in = $fopen("image_ram.srec", "r");
-        if (_uart_fh_in == 0) begin
-            $display("File image_ram.srec open error %d\n", _uart_fh_in);
-            $finish;
-        end
-    end
-    `endif
-    */
-    
-    reg [9:0] r_rx_shifter; // Receiver shifter
-    reg [7:0] r_rx_data;    // Received data
-    reg       r_rx_rdy;     // Received data ready
+    localparam
+        FSM_RX_IDLE = 0,
+        FSM_RX_DATA = 1,
+        FSM_RX_STOP = 2;
 
-    always@(posedge rst or posedge clk) begin : RX_BUFFER
+    reg [2:0] r_rx_fsm;   // Receiver state machine
+    reg [7:0] r_rx_shift; // Received data
+    reg [7:0] r_rx_data;  // Received data
+    reg       r_rx_vld;   // Received data valid
+    reg       r_rx_rdy;   // Received data valid
+
+    always@(posedge rst or posedge clk) begin : RX_FSM
+        reg [2:0] v_data_cnt;
+        reg       v_rxd_d;
 
         if (rst) begin
-            r_rx_data    <= 8'h00;
-            r_rx_shifter <= 10'b1_11111111_1;
-            r_rx_rdy     <= 1'b0;
+            v_data_cnt <= 3'd0;
+            v_rxd_d    <= 1'b1;
+
+            r_rx_fsm   <= 3'b000;
+            r_rx_fsm[FSM_RX_IDLE] <= 1'b1;
+            r_rx_shift <= 8'hFF;
+            r_rx_data  <= 8'h00;
+            r_rx_vld   <= 1'b0;
+            r_rx_rdy   <= 1'b0;
         end
         else begin
-            /*
-            `ifdef verilator3
-            if ((csel & rden & bena[0]) && (!$feof(_uart_fh_in))) begin
-                r_rx_data <= $fgetc(_uart_fh_in);
+            if (r_rx_ena) begin
+                r_rx_fsm <= 3'b000;
+                
+                case(1'b1)
+                    r_rx_fsm[FSM_RX_IDLE] : begin
+                        v_data_cnt <= 3'd0;
+                        r_rx_vld   <= 1'b0;
+                
+                        // 1 -> 0 transition : start bit
+                        if (~r_uart_rxd_cc[2] & v_rxd_d) begin
+                            r_rx_fsm[FSM_RX_DATA] <= 1'b1;
+                        end
+                        else begin
+                            r_rx_fsm[FSM_RX_IDLE] <= 1'b1;
+                        end
+                    end
+                
+                    r_rx_fsm[FSM_RX_DATA] : begin
+                        r_rx_shift <= { r_uart_rxd_cc[2], r_rx_shift[7:1] };
+                
+                        if (v_data_cnt == 3'd7) begin
+                            r_rx_fsm[FSM_RX_STOP] <= 1'b1;
+                        end
+                        else begin
+                            v_data_cnt <= v_data_cnt + 3'd1;
+                            r_rx_fsm[FSM_RX_DATA] <= 1'b1;
+                        end
+                    end
+                
+                    r_rx_fsm[FSM_RX_STOP] : begin
+                        // 0 -> 1 transition : stop bit
+                        if (r_uart_rxd_cc[2] & ~v_rxd_d) begin
+                            r_rx_fsm[FSM_RX_IDLE] <= 1'b1;
+                        end
+                        else begin
+                            r_rx_fsm[FSM_RX_STOP] <= 1'b1;
+                        end
+                        r_rx_vld <= r_uart_rxd_cc[2] & ~v_rxd_d;
+                    end
+                endcase
+                v_rxd_d <= r_uart_rxd_cc[2];
+            end
+            if (r_rx_vld & r_rx_ena) begin
+                r_rx_data <= r_rx_shift;
                 r_rx_rdy  <= 1'b1;
             end
-            else begin
+            else if (csel & rden & bena[0] & r_dtack) begin
                 r_rx_rdy  <= 1'b0;
-            end
-            `endif
-            */
-            
-            if (r_rx_ena) begin
-                r_rx_shifter <= { r_uart_rxd_cc[2], r_rx_shifter[9:1] };
-            end
-            else begin
-                if (r_rx_shifter[9] & ~r_rx_shifter[0]) begin
-                    r_rx_data    <= r_rx_shifter[8:1];
-                    r_rx_shifter <= 10'b1_11111111_1;
-                    r_rx_rdy     <= 1'b1;
-                end
-                else if (csel & rden & bena[0]) begin
-                    r_rx_rdy     <= 1'b0;
-                end
             end
         end
     end
