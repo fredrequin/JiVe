@@ -1,0 +1,18 @@
+ldc_set_location -site {23} [get_ports {dip_sw[1]}]
+ldc_set_location -site {25} [get_ports {dip_sw[2]}]
+ldc_set_location -site {34} [get_ports {dip_sw[3]}]
+ldc_set_location -site {43} [get_ports {dip_sw[4]}]
+ldc_set_location -site {14} [get_ports spi_miso]
+ldc_set_location -site {17} [get_ports spi_mosi]
+ldc_set_location -site {15} [get_ports spi_sclk]
+ldc_set_location -site {16} [get_ports spi_ss_n]
+ldc_set_location -site {31} [get_ports uart_rts]
+ldc_set_location -site {26} [get_ports uart_txd]
+ldc_set_vcc -bank 0 3.3
+ldc_set_vcc -bank 1 3.3
+ldc_set_vcc -bank 2 3.3
+ldc_set_vcc -core 1.2
+ldc_set_location -site {35} [get_ports clk]
+ldc_set_attribute {USE_PRIMARY=TRUE} [get_nets clk_c]
+ldc_set_location -site {32} [get_ports uart_rxd]
+ldc_set_location -site {27} [get_ports uart_cts]

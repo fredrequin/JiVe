@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RadiantProject version="4.0" title="ice40_riscv" device="iCE40UP5K-SG48I" performance_grade="High-Performance_1.2V" default_implementation="default">
+    <Options/>
+    <Implementation title="default" dir="default" description="default" synthesis="lse" default_strategy="Strategy1">
+        <Options def_top="jive_soc_top" top="jive_soc_top"/>
+        <Source name="../_sandbox/jive_bootrom/jive_bootrom.ipx" type="IPX_Module" type_short="IPX">
+            <Options/>
+        </Source>
+        <Source name="../_sandbox/jive_regfile_lo/jive_regfile_lo.ipx" type="IPX_Module" type_short="IPX">
+            <Options/>
+        </Source>
+        <Source name="../_sandbox/jive_regfile_hi/jive_regfile_hi.ipx" type="IPX_Module" type_short="IPX">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_alu16.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_cpu_top.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_csr.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_decode.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_reg_file.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_soc_top.v" type="Verilog" type_short="Verilog">
+            <Options top_module="jive_soc_top"/>
+        </Source>
+        <Source name="../../src/jive_timer.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="../../src/jive_uart.v" type="Verilog" type_short="Verilog">
+            <Options/>
+        </Source>
+        <Source name="ice40_risc.pdc" type="Physical Constraints File" type_short="PDC">
+            <Options/>
+        </Source>
+        <Source name="ice40_riscv.ldc" type="LSE Design Constraints File" type_short="LDC">
+            <Options/>
+        </Source>
+        <Source name="source/default.xcf" type="Programming Project File" type_short="Programming">
+            <Options/>
+        </Source>
+    </Implementation>
+    <Strategy name="Strategy1" file="ice40_riscv1.sty"/>
+</RadiantProject>

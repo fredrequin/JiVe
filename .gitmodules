@@ -1,0 +1,6 @@
+[submodule "riscv-compliance"]
+      path = riscv-compliance
+      url = git://github.com/fredrequin/riscv-compliance.git
+[submodule "zephyr"]
+      path = zephyr
+      url = git://github.com/fredrequin/zephyr.git

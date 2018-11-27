@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!DOCTYPE		ispXCF	SYSTEM	"IspXCF.dtd" >
+<ispXCF version="R1.0.0">
+	<Comment></Comment>
+	<Chain>
+		<Comm>Slave SPI</Comm>
+		<Device>
+			<SelectedProg value="TRUE"/>
+			<Pos>1</Pos>
+			<Vendor>Lattice</Vendor>
+			<Family>iCE40 UltraPlus</Family>
+			<Name>iCE40UP5K</Name>
+			<IDCode>0x11200639</IDCode>
+			<Package>All</Package>
+			<PON>iCE40UP5K</PON>
+			<Bypass>
+				<InstrLen>8</InstrLen>
+				<InstrVal>11111111</InstrVal>
+				<BScanLen>1</BScanLen>
+				<BScanVal>0</BScanVal>
+			</Bypass>
+			<File>D:/frederic/ARG_Projects/cores_Stratix/IPs/cpu_jive/radiant/ice40_riscv/default/ice40_riscv_default.bin</File>
+			<FileTime>11/25/18 22:08:30</FileTime>
+			<MemoryType>Compressed Random Access Memory (CRAM)</MemoryType>
+			<Operation>Fast Configuration</Operation>
+			<Option>
+				<SVFVendor>JTAG STANDARD</SVFVendor>
+				<IOState>HighZ</IOState>
+				<AccessMode>Direct Programming</AccessMode>
+			</Option>
+		</Device>
+	</Chain>
+	<ProjectOptions>
+		<Program>SEQUENTIAL</Program>
+		<Process>ENTIRED CHAIN</Process>
+		<OperationOverride>No Override</OperationOverride>
+		<StartTAP>TLR</StartTAP>
+		<EndTAP>TLR</EndTAP>
+		<DisableCheckBoard value="TRUE"/>
+		<VerifyUsercode value="FALSE"/>
+		<TCKDelay>1</TCKDelay>
+	</ProjectOptions>
+	<CableOptions>
+		<CableName>USB2</CableName>
+		<PortAdd>FTUSB-0</PortAdd>
+		<USBID>USB --- Serial Converter A Location 0000 Serial FT2N8Z6HA</USBID>
+	</CableOptions>
+</ispXCF>
